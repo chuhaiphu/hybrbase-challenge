@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDownIcon, TrashIcon } from '@heroicons/react/20/solid'
+import { Link } from 'react-router'
 
 
 const products = [
@@ -147,12 +148,12 @@ export default function CheckoutPaymentComponent() {
                     </div>
                   </section>
 
-                  <button
-                    type="submit"
-                    className="mt-5 w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden"
+                  <Link
+                    to={"/checkout/order-confirmation"}
+                    className="mt-5 w-full rounded-md border border-transparent bg-red-900 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-red-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden inline-flex items-center justify-center"
                   >
                     Confirm payment
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -4,6 +4,11 @@ import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router'
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { setLoggedOut } from '../../store/slice/authSlice'
+import CartFloating from '../cart/cart-floating'
+import CartFloatingComponent from '../cart/cart-floating'
 
 const navigation = [
   { name: 'Shop', href: '/shop' },
@@ -16,8 +21,21 @@ interface HeaderProps {
   isDarkTheme?: boolean
 }
 
+type RootState = {
+  auth: {
+    isLoggedIn: boolean
+    user: any
+  }
+}
+
 export default function HeaderComponent({ isDarkTheme = false }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const dispatch = useDispatch()
+  const { isLoggedIn, user } = useSelector((state: RootState) => state.auth)
+  
+  const handleLogout = () => {
+    dispatch(setLoggedOut())
+  }
 
   const themeClasses = isDarkTheme
     ? 'bg-gray-900 text-white'
@@ -25,7 +43,7 @@ export default function HeaderComponent({ isDarkTheme = false }: HeaderProps) {
 
   const buttonClasses = isDarkTheme
     ? 'bg-white text-gray-900 hover:bg-gray-100'
-    : 'bg-gray-900 hover:bg-indigo-500 text-white'
+    : 'bg-gray-900 hover:bg-red-900 text-white'
 
   const iconClasses = isDarkTheme
     ? 'text-white hover:text-gray-300'
@@ -59,18 +77,32 @@ export default function HeaderComponent({ isDarkTheme = false }: HeaderProps) {
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-lg font-semibold hover:opacity-80">
+            <Link key={item.name} to={item.href} className="text-lg font-semibold hover:opacity-80">
               {item.name}
-            </a>
+            </Link>
           ))}
         </div>
-
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <button
-            className={`rounded-md px-4 py-2 text-lg font-semibold shadow-sm transition-colors duration-200 cursor-pointer ${buttonClasses}`}
-          >
-            Log in
-          </button>
+
+          {isLoggedIn ? (
+            <div className="flex items-center gap-4">
+              <span className="text-lg">Welcome, {user.username}</span>
+              <button
+                onClick={handleLogout}
+                className={`rounded-md px-4 py-2 text-lg font-semibold shadow-sm transition-colors duration-200 cursor-pointer ${buttonClasses}`}
+              >
+                Log out
+              </button>
+            </div>
+          ) : (
+            <Link to="/sign-in">
+              <button
+                className={`rounded-md px-4 py-2 text-lg font-semibold shadow-sm transition-colors duration-200 cursor-pointer ${buttonClasses}`}
+              >
+                Log in
+              </button>
+            </Link>
+          )}
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">

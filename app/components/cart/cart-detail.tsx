@@ -2,45 +2,37 @@
 
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { CheckIcon, ClockIcon, QuestionMarkCircleIcon, XMarkIcon as XMarkIconMini } from '@heroicons/react/20/solid'
+import { api } from 'convex/_generated/api'
+import type { Id } from 'convex/_generated/dataModel'
+import { useMutation, useQuery } from 'convex/react'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router'
+import type { RootState } from '~/store/store'
 
-const products = [
-  {
-    id: 1,
-    name: 'Basic Tee',
-    href: '#',
-    price: '$32.00',
-    color: 'Sienna',
-    inStock: true,
-    size: 'Large',
-    imageSrc: 'https://tailwindui.com/plus-assets/img/ecommerce-images/shopping-cart-page-01-product-01.jpg',
-    imageAlt: "Front of men's Basic Tee in sienna.",
-  },
-  {
-    id: 2,
-    name: 'Basic Tee',
-    href: '#',
-    price: '$32.00',
-    color: 'Black',
-    inStock: false,
-    leadTime: '3–4 weeks',
-    size: 'Large',
-    imageSrc: 'https://tailwindui.com/plus-assets/img/ecommerce-images/shopping-cart-page-01-product-02.jpg',
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 3,
-    name: 'Nomad Tumbler',
-    href: '#',
-    price: '$35.00',
-    color: 'White',
-    inStock: true,
-    imageSrc: 'https://tailwindui.com/plus-assets/img/ecommerce-images/shopping-cart-page-01-product-03.jpg',
-    imageAlt: 'Insulated bottle with white base and black snap lid.',
-  },
-]
 
 
 export default function CartDetailComponent() {
+  const userId = useSelector((state: RootState) => state.auth.user?._id) || ''
+
+  const cartItems = useQuery(api.cart.getCartItems, { userId });
+
+  const cartProducts = cartItems?.map(item =>
+    useQuery(api.clothes.getClothesById, {
+      id: item.productId
+    })
+  ) || [];
+  console.log(cartProducts);
+
+  const updateQuantity = useMutation(api.cart.updateCartItemQuantity);
+  const removeItem = useMutation(api.cart.removeFromCart);
+
+  const handleQuantityChange = async (cartItemId: Id<"cart">, quantity: number) => {
+    await updateQuantity({ cartItemId, quantity });
+  };
+
+  const handleRemoveItem = async (cartItemId: Id<"cart">) => {
+    await removeItem({ cartItemId });
+  };
 
   return (
     <div className="bg-white">
@@ -55,12 +47,12 @@ export default function CartDetailComponent() {
             </h2>
 
             <ul role="list" className="divide-y divide-gray-200 border-t border-b border-gray-200">
-              {products.map((product, productIdx) => (
-                <li key={product.id} className="flex py-6 sm:py-10">
+              {cartProducts.map((product, index) => (
+                <li key={product?._id} className="flex py-6 sm:py-10">
                   <div className="shrink-0">
                     <img
-                      alt={product.imageAlt}
-                      src={product.imageSrc}
+                      alt={product?.images[0]?.alt || 'Product Image'}
+                      src={product?.images[0]?.src || ''}
                       className="size-24 rounded-md object-cover sm:size-48"
                     />
                   </div>
@@ -70,45 +62,34 @@ export default function CartDetailComponent() {
                       <div>
                         <div className="flex justify-between">
                           <h3 className="text-sm">
-                            <a href={product.href} className="font-medium text-gray-700 hover:text-gray-800">
-                              {product.name}
-                            </a>
+                            <Link to={`product/${product?._id}`} className="font-medium text-gray-700 hover:text-gray-800">
+                              {product?.name}
+                            </Link>
                           </h3>
                         </div>
                         <div className="mt-1 flex text-sm">
-                          <p className="text-gray-500">{product.color}</p>
-                          {product.size ? (
-                            <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">{product.size}</p>
+                          <p className="text-gray-500">{product?.colors[0]?.name}</p>
+                          {product?.sizes ? (
+                            <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">{product?.sizes[0].name}</p>
                           ) : null}
                         </div>
-                        <p className="mt-1 text-sm font-medium text-gray-900">{product.price}</p>
+                        <p className="mt-1 text-sm font-medium text-gray-900">{product?.price}</p>
                       </div>
 
                       <div className="mt-4 sm:mt-0 sm:pr-9">
+                        {/* Replace the select element with a simple display of quantity */}
                         <div className="inline-grid w-full max-w-16 grid-cols-1">
-                          <select
-                            id={`quantity-${productIdx}`}
-                            name={`quantity-${productIdx}`}
-                            aria-label={`Quantity, ${product.name}`}
-                            className="col-start-1 row-start-1 appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                          >
-                            <option value={1}>1</option>
-                            <option value={2}>2</option>
-                            <option value={3}>3</option>
-                            <option value={4}>4</option>
-                            <option value={5}>5</option>
-                            <option value={6}>6</option>
-                            <option value={7}>7</option>
-                            <option value={8}>8</option>
-                          </select>
-                          <ChevronDownIcon
-                            aria-hidden="true"
-                            className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-                          />
+                          <span className="col-start-1 row-start-1 rounded-md bg-white py-1.5 px-3 text-base text-gray-900">
+                            {cartItems && cartItems[index]?.quantity}
+                          </span>
                         </div>
 
                         <div className="absolute top-0 right-0">
-                          <button type="button" className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500">
+                          <button
+                            type="button"
+                            className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
+                            onClick={() => cartItems && handleRemoveItem(cartItems[index]._id)}
+                          >
                             <span className="sr-only">Remove</span>
                             <XMarkIconMini aria-hidden="true" className="size-5" />
                           </button>
@@ -117,13 +98,13 @@ export default function CartDetailComponent() {
                     </div>
 
                     <p className="mt-4 flex space-x-2 text-sm text-gray-700">
-                      {product.inStock ? (
+                      {product?.sizes[0].inStock ? (
                         <CheckIcon aria-hidden="true" className="size-5 shrink-0 text-green-500" />
                       ) : (
                         <ClockIcon aria-hidden="true" className="size-5 shrink-0 text-gray-300" />
                       )}
 
-                      <span>{product.inStock ? 'In stock' : `Ships in ${product.leadTime}`}</span>
+                      <span>{product?.sizes[0].inStock ? 'In stock' : `Ships in 3-4 weeks`}</span>
                     </p>
                   </div>
                 </li>
@@ -172,12 +153,13 @@ export default function CartDetailComponent() {
             </dl>
 
             <div className="mt-6">
-              <button
-                type="submit"
-                className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden"
+              <Link
+                to="/checkout/address"
+                className="w-full rounded-md border border-transparent bg-red-900 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-red-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden inline-flex items-center justify-center"
               >
                 Checkout
-              </button>
+              </Link>
+
             </div>
           </section>
         </form>

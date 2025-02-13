@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDownIcon, TrashIcon } from '@heroicons/react/20/solid'
+import { Link } from 'react-router'
 
 
 const products = [
@@ -30,58 +31,58 @@ export default function CheckoutShippingComponent() {
 
           <form className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
             <div>
-                <h2 className="text-lg font-medium text-gray-900">Shipping Method</h2>
+              <h2 className="text-lg font-medium text-gray-900">Shipping Method</h2>
 
-                <div className="mt-4 mr-48 grid grid-cols-1 gap-8 sm:grid-cols-1">
-                  {/* Standard Shipping Card */}
-                  <div
-                    className="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none hover:border-indigo-600"
-                    onClick={() => setSelectedShipping('standard')}
-                  >
-                    <div className="flex flex-1">
-                      <div className="flex flex-col">
-                        <span className="block text-sm font-medium text-gray-900">Standard Shipping</span>
-                        <span className="mt-1 flex items-center text-sm text-gray-500">4-10 business days</span>
-                        <span className="mt-2 text-sm font-medium text-gray-900">$5.00</span>
-                      </div>
-                    </div>
-                    <div className={`h-5 w-5 rounded-full border flex items-center justify-center ${selectedShipping === 'standard' ? 'border-indigo-600 bg-indigo-600' : 'border-gray-300'
-                      }`}>
-                      {selectedShipping === 'standard' && (
-                        <div className="h-2.5 w-2.5 rounded-full bg-white" />
-                      )}
+              <div className="mt-4 mr-48 grid grid-cols-1 gap-8 sm:grid-cols-1">
+                {/* Standard Shipping Card */}
+                <div
+                  className="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none hover:border-indigo-600"
+                  onClick={() => setSelectedShipping('standard')}
+                >
+                  <div className="flex flex-1">
+                    <div className="flex flex-col">
+                      <span className="block text-sm font-medium text-gray-900">Standard Shipping</span>
+                      <span className="mt-1 flex items-center text-sm text-gray-500">4-10 business days</span>
+                      <span className="mt-2 text-sm font-medium text-gray-900">$5.00</span>
                     </div>
                   </div>
-
-                  {/* Express Shipping Card */}
-                  <div
-                    className="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none hover:border-indigo-600"
-                    onClick={() => setSelectedShipping('express')}
-                  >
-                    <div className="flex flex-1">
-                      <div className="flex flex-col">
-                        <span className="block text-sm font-medium text-gray-900">Express Shipping</span>
-                        <span className="mt-1 flex items-center text-sm text-gray-500">1-3 business days</span>
-                        <span className="mt-2 text-sm font-medium text-gray-900">$15.00</span>
-                      </div>
-                    </div>
-                    <div className={`h-5 w-5 rounded-full border flex items-center justify-center ${selectedShipping === 'express' ? 'border-indigo-600 bg-indigo-600' : 'border-gray-300'
-                      }`}>
-                      {selectedShipping === 'express' && (
-                        <div className="h-2.5 w-2.5 rounded-full bg-white" />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-200 py-6">
-                    <button
-                      type="submit"
-                      className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden"
-                    >
-                      Confirm order
-                    </button>
+                  <div className={`h-5 w-5 rounded-full border flex items-center justify-center ${selectedShipping === 'standard' ? 'border-indigo-600 bg-indigo-600' : 'border-gray-300'
+                    }`}>
+                    {selectedShipping === 'standard' && (
+                      <div className="h-2.5 w-2.5 rounded-full bg-white" />
+                    )}
                   </div>
                 </div>
+
+                {/* Express Shipping Card */}
+                <div
+                  className="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none hover:border-indigo-600"
+                  onClick={() => setSelectedShipping('express')}
+                >
+                  <div className="flex flex-1">
+                    <div className="flex flex-col">
+                      <span className="block text-sm font-medium text-gray-900">Express Shipping</span>
+                      <span className="mt-1 flex items-center text-sm text-gray-500">1-3 business days</span>
+                      <span className="mt-2 text-sm font-medium text-gray-900">$15.00</span>
+                    </div>
+                  </div>
+                  <div className={`h-5 w-5 rounded-full border flex items-center justify-center ${selectedShipping === 'express' ? 'border-indigo-600 bg-indigo-600' : 'border-gray-300'
+                    }`}>
+                    {selectedShipping === 'express' && (
+                      <div className="h-2.5 w-2.5 rounded-full bg-white" />
+                    )}
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 py-6">
+                  <Link
+                    to={'/checkout/payment'}
+                    className="w-full rounded-md border border-transparent bg-red-900 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-red-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden inline-flex items-center justify-center"
+                  >
+                    Confirm order
+                  </Link>
+                </div>
+              </div>
 
             </div>
 

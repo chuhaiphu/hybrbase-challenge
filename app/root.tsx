@@ -9,6 +9,10 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
+import ToastProvider from "./providers/toastify-provider";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -22,6 +26,7 @@ export const links: Route.LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -33,7 +38,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <ConvexProvider client={convex}>
+          <Provider store={store}>
+            {children}
+            <ToastProvider />
+          </Provider>
+        </ConvexProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

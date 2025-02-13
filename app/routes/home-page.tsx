@@ -1,6 +1,5 @@
 import type { Route } from "./+types/home-page";
 import HeaderComponent from "~/components/header/header";
-import FooterComponent from "~/components/footer/footer";
 import BentoGridComponent from "~/components/hero/bento-grid";
 
 export function meta({}: Route.MetaArgs) {
@@ -13,7 +12,6 @@ export function meta({}: Route.MetaArgs) {
 export default function HomePage() {
   return (
     <>
-      <HeaderComponent />
       <BentoGridComponent />
     </>
   )

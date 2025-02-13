@@ -6,6 +6,12 @@ import {
   RadioGroup,
 } from '@headlessui/react'
 import { StarIcon } from '@heroicons/react/20/solid'
+import { useDispatch, useSelector } from 'react-redux'
+import { useMutation } from 'convex/react'
+import { api } from 'convex/_generated/api'
+import { incrementItemCount } from '~/store/slice/cartSlice'
+import { useNavigate } from 'react-router'
+import { toast } from 'react-toastify'
 
 const product = {
   name: 'Basic Tee 6-Pack',
@@ -115,9 +121,33 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function ItemDetailComponent() {
+export default function ItemDetailComponent({ item }: any) {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const addToCart = useMutation(api.cart.addToCart)
+  const user = useSelector((state: any) => state.auth.user)
   const [selectedColor, setSelectedColor] = useState(product.colors[0])
   const [selectedSize, setSelectedSize] = useState(product.sizes[2])
+
+  const handleAddToCart = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!user) {
+      toast.error('Please login first to add items to cart')
+      return
+    }
+
+    try {
+      await addToCart({
+        userId: user._id,
+        productId: item._id,
+        quantity: 1
+      })
+      navigate('/cart')
+    } catch (error) {
+      console.error('Failed to add item to cart:', error)
+    }
+  }
 
   return (
     <div className="bg-white">
@@ -155,8 +185,8 @@ export default function ItemDetailComponent() {
         {/* Image gallery */}
         <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
           <img
-            alt={product.images[0].alt}
-            src={product.images[0].src}
+            alt={item?.images[0].alt}
+            src={item?.images[0].src}
             className="hidden aspect-3/4 size-full rounded-lg object-cover lg:block"
           />
           <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
@@ -187,7 +217,7 @@ export default function ItemDetailComponent() {
           {/* Options */}
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
-            <p className="text-3xl tracking-tight text-gray-900">{product.price}</p>
+            <p className="text-3xl tracking-tight text-gray-900">${item?.price}</p>
 
             {/* Reviews */}
             <div className="mt-6">
@@ -212,7 +242,7 @@ export default function ItemDetailComponent() {
               </div>
             </div>
 
-            <form className="mt-10">
+            <form className="mt-10" onSubmit={handleAddToCart}>
               {/* Colors */}
               <div>
                 <h3 className="text-sm font-medium text-gray-900">Color</h3>
@@ -295,9 +325,9 @@ export default function ItemDetailComponent() {
 
               <button
                 type="submit"
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
+                className="cursor-pointer mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-900 px-8 py-3 text-base font-medium text-white hover:bg-red-900 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-hidden"
               >
-                Add to bag
+                Add to cart
               </button>
             </form>
           </div>
@@ -308,7 +338,7 @@ export default function ItemDetailComponent() {
               <h3 className="sr-only">Description</h3>
 
               <div className="space-y-6">
-                <p className="text-base text-gray-900">{product.description}</p>
+                <p className="text-base text-gray-900">{item?.description}</p>
               </div>
             </div>
 
@@ -317,7 +347,7 @@ export default function ItemDetailComponent() {
 
               <div className="mt-4">
                 <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                  {product.highlights.map((highlight) => (
+                  {item?.highlights.map((highlight: any) => (
                     <li key={highlight} className="text-gray-400">
                       <span className="text-gray-600">{highlight}</span>
                     </li>

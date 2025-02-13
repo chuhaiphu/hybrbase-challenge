@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home-page";
 import FooterComponent from "~/components/footer/footer";
-import CheckoutPaymentComponent from "~/components/checkout/checkout-payment";
+import CheckoutOrderConfirmationComponent from "~/components/checkout/checkout-order-confirmation";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,7 +12,7 @@ export function meta({}: Route.MetaArgs) {
 export default function CheckoutPaymentPage() {
   return (
     <>
-      <CheckoutPaymentComponent />
+      <CheckoutOrderConfirmationComponent />
       <FooterComponent />
     </>
   )
