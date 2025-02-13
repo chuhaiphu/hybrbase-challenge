@@ -5,10 +5,11 @@
 
 ## Desrciption
 - **Maintainable Codebase and Architecture:**
-  - **Routes:** Configured with ```routes.ts``` enables automatically code-split each route, provide type safety for the parameters and data, and automatically load the data with access to pending states as the user navigates to it.
+  - **Routes:** Configured with ```routes.ts``` enables automatically code-split each route, provide type safety for the parameters and data, and automatically load the data with access to pending states as the user navigates to it
     * **Components and Layout:** Seperated by feature and domain - can be grouped and reused across the app
-    * **Global State Management with Redux:** Provides a centralized state management solution for the application, allowing for efficient data sharing and management across different components.
+    * **Global State Management with Redux:** Provides a centralized state management solution for the application, allowing for efficient data sharing and management across different components
     * **Providers for extension wrapper:** Here we can wrap our application with React-Toastify allows you to add notifications to your app with ease
+    **Database Integration:** Configured in the ```/convex``` folder, which allows for easy integration with a database using Convex
 
 ## Demo
 [Click here to view](https://youtu.be/R0kNDGETfh4)
