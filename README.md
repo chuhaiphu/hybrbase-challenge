@@ -3,6 +3,9 @@
   <h3>A product catalog system for an expanding e-commerce retailer</h3>
 </div>
 
+## Authentication Flow of Convex
+<img src="public/Authentication Flow using Convex.png" width="840" alt="Demo">
+
 ## Desrciption
 - **Maintainable Codebase and Architecture:**
   - **Routes:** Configured with ```routes.ts``` enables automatically code-split each route, provide type safety for the parameters and data, and automatically load the data with access to pending states as the user navigates to it
